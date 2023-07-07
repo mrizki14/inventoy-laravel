@@ -24,7 +24,7 @@
 </div>
 
 <!-- Nav Item - Pages Collapse Menu Users -->
-{{-- <li class="nav-item">
+<li class="nav-item">
     <a class="nav-link collapsed" href="/" data-toggle="collapse" data-target="#collapsePageUser"
         aria-expanded="true" aria-controls="collapsePageUser">
         <i class="fas fa-users"></i>
@@ -32,15 +32,15 @@
     </a>
     <div id="collapsePageUser" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="/dataAdmin">
+            <a class="collapse-item {{ ($title == "Data Role") ? 'active' : '' }}" href="{{url('role')}}">
                 <i class="fas fa-user-tie"></i>
-                Admin</a>
-            <a class="collapse-item" href="forgot-password.html">
+                Role</a>
+            {{-- <a class="collapse-item" href="forgot-password.html">
                 <i class="fas fa-user"></i>
-                User</a>
+                User</a> --}}
         </div>
     </div>
-</li> --}}
+</li>
 
 <!-- Nav Item - Pages Collapse Menu Users -->
 <li class="nav-item">

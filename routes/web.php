@@ -13,6 +13,8 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ManageUserController;
 use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\LogBarangController;
+use App\Http\Controllers\ManageRole;
+use App\Http\Controllers\ManageRoleController;
 use App\Models\BarangKeluar;
 
 /*
@@ -26,12 +28,20 @@ use App\Models\BarangKeluar;
 |
 */
 
-
+// LOGIN
 Route::get('/', [AuthController::class, 'login'])->middleware('guest')->name('/');
 Route::post('/', [AuthController::class, 'auth'])->middleware('guest'); 
 Route::get('/logout',[AuthController::class, 'logout'])->middleware('auth');
 Route::get('/home', [HomeController::class, 'index'])->middleware('auth');
 
+
+//ROLE
+Route::get('role', [ManageRoleController::class, 'index']);
+Route::get('role/add', [ManageRoleController::class, 'tambah']);
+Route::post('role/add', [ManageRoleController::class, 'store'])->name('add.role');
+Route::get('role/edit/{id}', [ManageRoleController::class, 'edit']);
+Route::put('role/edit/{id}', [ManageRoleController::class, 'update'])->name('update.role');
+Route::get('role/delete/{id}', [ManageRoleController::class, 'delete'])->name('delete.role');
 
 // Kategori
 Route::middleware(['auth'])->group(function() {
