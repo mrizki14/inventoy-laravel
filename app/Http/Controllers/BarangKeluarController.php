@@ -39,9 +39,9 @@ class BarangKeluarController extends Controller
             'tgl_keluar.required' => 'tgl barang tidak boleh kosong',
         ]);
 
-        // $brg = Codes::findOrFail($request->codes_id);
-        // $brg->jumlah_barang -= $request->qty;
-        // $brg->save();
+        $brg = Codes::findOrFail($request->codes_id);
+        $brg->jumlah_barang -= $request->qty;
+        $brg->save();
 
         $input_barang = BarangKeluar::create($request->all());
 

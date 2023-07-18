@@ -104,15 +104,19 @@ class CodesController extends Controller
     
     public function logBarang (Request $request) {
 
-        $barang = Codes::with(['barangMasuk', 'barangKeluar'])->get();
-        
-        
+        $barang = Codes::with(['barangMasuk', 'barangKeluar'])->get();   
+        $row = BarangMasuk::all();
+        // if(BarangMasuk::find('id') === true)  {
+        // return new ($barang);
+        // }    
         // $stockMasuk = BarangMasuk::all();
         // $stockMasuk->when($request->qty, function ($query) use ($request){
         //     return $query->whereCategory($request->qty);
         // });
+        
         return view('log_barang',compact('barang'),[
             "title" => "Data Barang",
+            'rows' => $row
             // 'stockMasuk' => $stockMasuk
 
         ]);
