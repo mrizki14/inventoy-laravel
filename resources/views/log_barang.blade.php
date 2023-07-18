@@ -19,7 +19,7 @@
                                             <th>No.</th>
                                             <th>Kode Barang</th>
                                             <th>Nama Barang</th>
-                                            <th>Stok Awal</th>
+                                            <th>Stok</th>
                                             <th>Barang Masuk</th>
                                             <th>Tanggal Masuk</th>
                                             <th>Barang Keluar</th>
@@ -42,6 +42,8 @@
                                         <td class="text-capitalize">{{ $row->barangMasuk->implode('tgl_masuk')}}</td>
                                         <td class="text-capitalize">{{$row->barangKeluar->implode('qty')}}</td>
                                         <td class="text-capitalize">{{ $row->barangKeluar->implode('tgl_keluar') }}</td>
+                                        <td class="text-capitalize">{{ $row->jumlah_barang }}</td>
+
                                         {{-- <td class="text-capitalize">{{ $row->stock_akhir }}</td> --}}
                                         <td>
                                             <div>
