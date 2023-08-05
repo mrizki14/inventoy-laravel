@@ -67,6 +67,9 @@ class Kernel extends HttpKernel
         'ceklevel' => App\Http\Middleware\CekLevel::class,
         'userAkses' => \App\Http\Middleware\UserAkses::class,
         'adminAkses' => \App\Http\Middleware\AdminAkses::class,
+        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
      
     ];
 

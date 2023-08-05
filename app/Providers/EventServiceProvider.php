@@ -2,10 +2,18 @@
 
 namespace App\Providers;
 
+use App\Events\BarangMasukCreated;
+use App\Events\BarangKeluarCreated;
+use Illuminate\Support\Facades\Event;
+use App\Events\BarangTransaksiCreated;
 use Illuminate\Auth\Events\Registered;
+use App\Listeners\BarangTransaksiListener;
+use App\Listeners\BarangMasukCreatedListener;
+use Illuminate\Database\Events\QueryExecuted;
+use App\Listeners\BarangKeluarCreatedListener;
+use App\Listeners\BarangTransaksiCreatedListener;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -15,8 +23,16 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
+        // BarangMasukCreated::class => [
+        //     BarangMasukCreatedListener::class,
+        // ],
+        // BarangKeluarCreated::class => [
+        //     BarangKeluarCreatedListener::class,
+        // ],
+        BarangTransaksiCreated::class => [
+            // BarangTransaksiCreatedListener::class,
+            BarangMasukCreatedListener::class,
+            BarangKeluarCreatedListener::class
         ],
     ];
 

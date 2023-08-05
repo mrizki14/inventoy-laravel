@@ -2,32 +2,57 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BarangMasuk;
-use App\Models\Category;
+use Carbon\Carbon;
 use App\Models\Codes;
+use App\Models\Category;
+use App\Models\BarangMasuk;
+use App\Models\LogBarang;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
 
 class CodesController extends Controller
 {
+    function __construct()
+    {
+         $this->middleware('permission:barang-list|barang-create|barang-edit|barang-delete', ['only' => ['kode']]);
+         $this->middleware('permission:barang-create', ['only' => ['tambah','store']]);
+         $this->middleware('permission:barang-edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:barang-delete', ['only' => ['hapus']]);
+    }
     public function kode(Request $request)
     {
 
-        $kategori = Category::query()->select('id', 'nama_kategori')->get();
-        $data = Codes::all();
+       $barangs = Codes::all();
 
-
-
-        $kategori->when($request->nama_kategori, function ($query) use ($request){
-            return $query->whereCategory($request->nama_kategori);
-        });
-
-        return view('/codes', compact('data'),
+        return view('/codes', compact('barangs'),
         [
             "title" => "Kode Barang",
-            "kategori" => $kategori
 
         ]);
     }
+
+    public function search(Request $request) {
+        $search = $request->search;
+        $barangs = Codes::where(function($query) use ($search){
+            $query->where('kode_barang','like',"%$search%")
+            ->orWhere('nama_barang','like',"%$search%")
+            ->orWhere('jumlah_barang','like',"%$search%");
+        })
+        ->orWhereHas('categories', function($query) use ($search) {
+            $query->where('nama_kategori','like',"%$search%");
+        })
+        ->get();
+
+        return view ('codes', compact('barangs','search'),[
+            "title" => "Kode Barang",
+            
+        ]
+        );
+        }
+
+
+    
 
     // Function Tambah
     public function tambah()
@@ -102,26 +127,7 @@ class CodesController extends Controller
 
     }
     
-    public function logBarang (Request $request) {
-
-        $barang = Codes::with(['barangMasuk', 'barangKeluar'])->get();   
-        $row = BarangMasuk::all();
-        // if(BarangMasuk::find('id') === true)  {
-        // return new ($barang);
-        // }    
-        // $stockMasuk = BarangMasuk::all();
-        // $stockMasuk->when($request->qty, function ($query) use ($request){
-        //     return $query->whereCategory($request->qty);
-        // });
-        
-        return view('log_barang',compact('barang'),[
-            "title" => "Data Barang",
-            'rows' => $row
-            // 'stockMasuk' => $stockMasuk
-
-        ]);
-        
-    }
+    
 
     
 }

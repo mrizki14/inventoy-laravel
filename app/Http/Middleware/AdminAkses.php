@@ -19,7 +19,7 @@ class AdminAkses
     public function handle(Request $request, Closure $next): Response
     {
         if(Auth::user()->role_id != 1) {
-            abort(404);
+            abort(403, 'Access Denied');
         }
         return $next($request);
     }

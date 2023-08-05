@@ -9,7 +9,8 @@
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Data Tabel Barang</h6>
+                            <h6 class="m-0 font-weight-bold text-primary mb-3">Data Tabel Barang</h6>
+                            <i class="bi bi-filetype-pdf"><a href="{{url('/export-pdf')}}" class="btn btn-success">Export PDF</a></i>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -19,7 +20,7 @@
                                             <th>No.</th>
                                             <th>Kode Barang</th>
                                             <th>Nama Barang</th>
-                                            <th>Stok</th>
+                                            <th>Stok Awal</th>
                                             <th>Barang Masuk</th>
                                             <th>Tanggal Masuk</th>
                                             <th>Barang Keluar</th>
@@ -29,28 +30,30 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @php
+                                    @php
                                         $no = 1;
                                     @endphp
-                                    @foreach ($barang as $row)    
+                                    @foreach ($logBarang as $barang)    
                                     <tr>
                                         <td class="number">{{ $no++ }}.</td>
-                                        <td class="text-capitalize">{{ $row->kode_barang}}</td>
-                                        <td class="text-capitalize">{{ $row->nama_barang }}</td>
-                                        <td class="text-capitalize">{{ $row->jumlah_barang }}</td>
-                                        <td class="text-capitalize">{{$row->barangMasuk->implode('qty')}}</td>
-                                        <td class="text-capitalize">{{ $row->barangMasuk->implode('tgl_masuk')}}</td>
-                                        <td class="text-capitalize">{{$row->barangKeluar->implode('qty')}}</td>
-                                        <td class="text-capitalize">{{ $row->barangKeluar->implode('tgl_keluar') }}</td>
-                                        <td class="text-capitalize">{{ $row->jumlah_barang }}</td>
+                                        <td class="text-capitalize">{{ $barang->code->kode_barang}}</td>
+                                        <td class="text-capitalize">{{ $barang->code->nama_barang}}</td>
+                                        <td class="text-capitalize">{{ $barang->code->jumlah_barang}}</td>
+                                        <td class="text-capitalize">{{ $barang->barang_masuk}}</td>
+                                        <td class="text-capitalize">{{ $barang->tgl_masuk}}</td>
+                                        <td class="text-capitalize">{{ $barang->barang_keluar}}</td>
+                                        <td class="text-capitalize">{{ $barang->tgl_keluar}}</td>
+                                        <td class="text-capitalize">{{ $barang->code->stock_akhir}}</td>
+                                        
+                                      
 
                                         {{-- <td class="text-capitalize">{{ $row->stock_akhir }}</td> --}}
-                                        <td>
+                                        {{-- <td>
                                             <div>
-                                                {{-- <a href="/edit_barang_masuk/{{ $row->id }}" class="btn btn-primary">Edit</a>
-                                                <a href="/delete_barang_masuk/{{ $row->id }}" class="btn btn-danger">Hapus</a> --}}
+                                                <a href="/edit_barang_masuk/{{ $row->id }}" class="btn btn-primary">Edit</a>
+                                                <a href="/delete_barang_masuk/{{ $row->id }}" class="btn btn-danger">Hapus</a>
                                             </div>
-                                        </td>
+                                        </td> --}}
                                     </tr>
                  
                                     @endforeach

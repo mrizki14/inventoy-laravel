@@ -13,11 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('log_barangs', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->unsignedBigInteger('codes_id');
+            $table->integer('stock_awal');
+            $table->integer('barang_masuk')->default(0);
+            $table->integer('barang_keluar')->default(0);
             $table->timestamps();
+    
+            $table->foreign('codes_id')->references('id')->on('codes')->onDelete('cascade');
         });
+    
     }
 
     /**
@@ -27,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('log_barangs');
     }
 };

@@ -15,8 +15,7 @@ class BarangKeluar extends Model
     {
         return $this->belongsTo(Codes::class, 'codes_id','id');
     }
-    public function logBarang()
-    {
-        return $this->hasMany(LogBarang::class);
-    }   
+    protected $dispatchesEvents = [
+        'created' => \App\Events\BarangTransaksiCreated::class,
+    ];
 }

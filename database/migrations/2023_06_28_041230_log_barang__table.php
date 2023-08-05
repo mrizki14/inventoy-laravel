@@ -13,14 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('log_barang', function (Blueprint $table) {
+        Schema::create('log_barangs', function (Blueprint $table) {
             $table->id();
             $table->integer('users_id');
-            $table->bigInteger('codes_id');
-            $table->bigInteger('barang_masuks_id');
-            $table->bigInteger('barang_keluars_id');
-            $table->bigInteger('qty');
+            $table->unsignedBigInteger('codes_id');
+            $table->bigInteger('barang_masuk')->default(0);
+            $table->bigInteger('barang_keluar')->default(0);
             $table->timestamps();
+
+            $table->foreign('codes_id')->references('id')->on('codes')->onDelete('cascade');
         });
     }
 

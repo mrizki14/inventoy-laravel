@@ -44,14 +44,23 @@
                 <div class="form-group">
                     <label for="name">Nama Role</label>
                     <input name="name" type="text"
-                        class="form-control @error('name') is-invalid @enderror" placeholder="Laptop"
+                        class="form-control @error('name') is-invalid @enderror"
                         value="{{ old('name') }}">
                     @error('name')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
+                <label for="permission">Assign Permission:</label>
+                @foreach ($permission as $value)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="permission[]" value="{{$value->id}}">
+                    <label class="form-check-label">
+                        {{ $value->name }}
+                    </label>
+                </div>
+                @endforeach
 
-                <div class="d-flex justify-content-between mx-2">
+                <div class="d-flex justify-content-between mt-2 mx-2">
                     <a class="btn btn-info" href="{{url('role')}}"> Kembali </a>
                     <button class="btn btn-success" type="submit">+ Tambah</button>
                 </div>

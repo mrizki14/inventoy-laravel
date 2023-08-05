@@ -3,53 +3,70 @@
 namespace App\Http\Controllers;
 
 use Rules\Password;
-use App\Models\Role;
+// use App\Models\Role;
 use App\Models\User;
 use App\Models\Category;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class ManageUserController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $roles = Role::all();
-        $query = User::query();
 
- 
+        $users = User::all();
+        // if(isset($request->name) && ($request->name != null)) {
+        //     $query->where('name', $request->name);
+        // }
+        // // $query->when($request->name, function($query) use ($request){
+        // //     return $query->where('name', 'like', '%'.$request->name.'%');
+        // // });
+        // if(isset($request->email) && ($request->email != null)) {
+        //     $query->where('email', $request->email);
+        // }
+        // if(isset($request->role) && ($request->role != null)) {
+        //     $query->whereHas('role', function($q) use ($request) {
+        //         $q->whereIn('id',$request->role);
+        //     });
+        // }
 
-        if(isset($request->name) && ($request->name != null)) {
-            $query->where('name', $request->name);
-        }
-        // $query->when($request->name, function($query) use ($request){
-        //     return $query->where('name', 'like', '%'.$request->name.'%');
-        // });
-        if(isset($request->email) && ($request->email != null)) {
-            $query->where('email', $request->email);
-        }
-        if(isset($request->role) && ($request->role != null)) {
-            $query->whereHas('role', function($q) use ($request) {
-                $q->whereIn('id',$request->role);
-            });
-        }
-
-        $data = $query->get();
-        return view ('manageUser', compact('data','roles'),[
+        // $data = $query->get();
+        return view ('manageUser', compact('users'),[
             "title" => "Tambah User",
         ]);
     }
 
+    public function search(Request $request){
+        $search = $request->search;
+        $users = User::where(function($query) use ($search){
+            $query->where('name','like',"%$search%")
+            ->orWhere('email','like',"%$search%");
+        })
+        ->orWhereHas('role', function($query) use ($search) {
+            $query->where('name','like',"%$search%");
+        })
+        ->get();
+
+        return view ('manageUser', compact('users','search'),[
+            "title" => "Tambah User",
+            
+        ]
+        );
+        }
+
     //Function Tambah
     public function tambah()
     {
-        $user = Role::select('id', 'name')->get();
+        $roles = Role::select('id', 'name')->get();
         return view('manage_user/add_user',
         [
             "title" => "Tambah User",
-            "user" => $user
+            "roles" => $roles
         ]);
     }
 
@@ -58,22 +75,30 @@ class ManageUserController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required',
-            'role_id' => 'required',
-            'password' => 'required'
+            // 'role_id' => 'required',
+            'password' => 'required',
+            'roles' => 'required'
         ],[
             'nama.required' => 'nama tidak boleh kosong',
             'email.required' => 'email tidak boleh kosong',
-            'role_id.required' => 'role tidak boleh kosong',
+            // 'role_id.required' => 'role tidak boleh kosong',
             'password.required' => 'password tidak boleh kosong',
+            'roles.required' => 'roles tidak boleh kosong',
         ]);
        
     
-            $create_user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'role_id' => $request->role_id,
-                'password' => Hash::make($request->password)
-            ]);
+            // $create_user = User::create([
+            //     'name' => $request->name,
+            //     'email' => $request->email,
+            //     'role_id' => $request->role_id,
+            //     'password' => Hash::make($request->password)
+            // ]);
+            
+            $input = $request->all();
+            $input['password'] = Hash::make($input['password']);
+        
+            $user = User::create($input);
+            $user->assignRole($request->input('roles'));
 
             // $credentials = $request->only('email', 'password');
             // Auth::attempt($credentials);
@@ -85,7 +110,7 @@ class ManageUserController extends Controller
                 return redirect()->route('user.manage')->with('success', 'User berhasil di tambahkan');
             // }
     
-            if(!$create_user){
+            if(!$user){
                 DB::rollBack();
     
                 return back()->with('error', 'Something went wrong while saving user data');
@@ -100,17 +125,19 @@ class ManageUserController extends Controller
 
     public function edit($id)
     {
-    $role =  User::find($id);
-    $user = Role::get();
+        $user = User::find($id);
+        $roles = Role::pluck('name','name')->all();
+        $userRole = $user->roles->pluck('name','name')->toArray();
 
-    if(!$user){
-        return back()->with('error', 'User Not Found');
-    }
+    // if(!$user){
+    //     return back()->with('error', 'User Not Found');
+    // }
 
     return view('manage_user.edit_user')->with([
         "title" => "Edit User",
         'user' => $user,
-        'role' => $role,
+        'roles' => $roles,
+        'userRole' => $userRole
     ]);
     }
 
@@ -118,20 +145,26 @@ class ManageUserController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required',
-            'role_id' => 'required',
-            'password' => 'nullable'
+            // 'role_id' => 'required',
+            'password' => 'nullable',
+            'roles' => 'required'
         ],[
             'nama.required' => 'nama tidak boleh kosong',
             'email.required' => 'email tidak boleh kosong',
-            'role_id.required' => 'role tidak boleh kosong',
+            'roles.required' => 'role tidak boleh kosong',
         ]);
-    
-            $update_user = User::where('id', $id)->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'role_id' => $request->role_id,
-                'password' => Hash::make($request->password)
-            ]);
+        
+            $input = $request->only(['name', 'email', 'roles']);
+            // if(!empty($input['password'])){ 
+            //     $input['password'] = Hash::make($input['password']);
+            // }else{
+            //     $input = Arr::except($input,array('password'));    
+            // }
+            $user = User::find($id);
+            $user->update($input);
+            DB::table('model_has_roles')->where('model_id',$id)->delete();
+        
+            $user->assignRole($request->input('roles'));
             // $credentials = $request->only('email', 'password');
             // if($request->role_id != 1)
             return redirect()->route('user.manage')->with('success', 'User Updated Successfully.');
@@ -139,7 +172,7 @@ class ManageUserController extends Controller
             //     return redirect()->route('user.manage')->with('success', 'User Updated Successfully.');
             // }
     
-            if(!$update_user){
+            if(!$user){
                 DB::rollBack();
     
                 return back()->with('error', 'Something went wrong while update user data');

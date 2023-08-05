@@ -51,8 +51,16 @@
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
-
-                <div class="d-flex justify-content-between mx-2">
+                <label for="permission">Edit Assign Permission:</label>
+                @foreach ($permission as $value)
+                <div class="form-check">
+                    <input type="checkbox" name="permission[{{$value->name}}]" value="{{ $value->name }}" class="permission form-check-input" {{ in_array($value->name,$rolePermissions)? 'checked':'' }}>              
+                    <label class="form-check-label">
+                       {{ $value->name }}
+                    </label>
+                </div>
+                @endforeach
+                <div class="d-flex justify-content-between mt-2 mx-2">
                     <a class="btn btn-info" href="{{url('role')}}"> Kembali </a>
                     <button class="btn btn-success" type="submit">Update</button>
                 </div>
@@ -62,6 +70,23 @@
 </div>
 
 </div>
+{{-- <script type="text/javascript">
+    $(document).ready(function() {
+        $('[name="all_permission"]').on('click', function() {
+
+            if($(this).is(':checked')) {
+                $.each($('.permission'), function() {
+                    $(this).prop('checked',true);
+                });
+            } else {
+                $.each($('.permission'), function() {
+                    $(this).prop('checked',false);
+                });
+            }
+            
+        });
+    });
+</script> --}}
 <script src="{{ '/assets/vendor/jquery/jquery.min.js' }}"></script>
 <script src="{{ '/assets/vendor/bootstrap/js/bootstrap.bundle.min.js' }}"></script>
 

@@ -12,23 +12,27 @@
 
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-    <div class="card-header py-3 d-flex justify-content-between">
-        <h6 class="font-weight-bold text-primary mt-2 ml-2">Data Kode Barang</h6>
+    <div class="card-header py-3 justify-content-between">
+        <h6 class="font-weight-bold text-primary mt-2 ml-2">Stock Barang</h6>
         <div class="d-flex">
-            
-            <div class="btn-group">
-                <button class="btn btn-secondary btn-sm dropdown-toggle mr-3" type="button" data-toggle="dropdown" aria-expanded="false">
-                  Kategori
-                </button>
-                <div class="dropdown-menu">
-                    @foreach ($kategori as $item)
-                        <option class="dropdown-item" name="nama_kategori" selected="{{ isset($_GET['nama_kategori']) && $_GET['nama_kategori'] == 'nama_kategori' }}" value="{{ $item->id }}">{{ $item->nama_kategori }}</option>
-                        @endforeach
+            <form action="{{route('s')}}" method="GET" class="d-none d-sm-inline-block form-inline mr-auto my-2 my-md-0 mw-100 ">
+                @csrf
+                <div class="input-group">
+                    <input type="text" class="form-control border-0 small mr-3" name="search" placeholder="Search for..." value="{{isset($search) ? $search : ''}}"/>
+                        {{-- <select name="role[]" class="form-control mr-3">
+                            <option value="">Pilih Role</option>
+                            @foreach ($roles as $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        </select> --}}
+                        <button class="btn btn-primary" type="submit">Search</button>
                 </div>
-              </div>
-
-              <div>
+            </form>                
+            <div>
+                @can('barang-create')
+                    
                 <a class="btn btn-success" href="kode_barang_add">+ Tambah</a>
+                @endcan
             </div>
         </div>
     </div>
@@ -42,26 +46,37 @@
                         <th>Nama</th>
                         <th>Kategori</th>
                         <th>Stock</th>
+                        {{-- @if(auth()->user()->can('barang edit') && auth()->user()->can('barang hapus')) --}}
                         <th>Aksi</th>
+                        {{-- @endif --}}
+                      
                     </tr>
                 </thead>
                 <tbody>
                     @php
                         $no = 1;
                     @endphp
-                    @foreach ($data as $kode)
+                    @foreach ($barangs as $barang)
                     <tr>
                         <td class="number">{{ $no++ }}.</td>
-                        <td class="text-uppercase">{{ $kode->kode_barang }}</td>
-                        <td class="text-capitalize">{{ $kode->nama_barang }}</td>
-                        <td class="text-capitalize">{{ $kode->categories->nama_kategori}}</td>
-                        <td class="text-capitalize">{{ $kode->jumlah_barang }}</td>
+                        <td class="text-uppercase">{{ $barang->kode_barang }}</td>
+                        <td class="text-capitalize">{{ $barang->nama_barang }}</td>
+                        <td class="text-capitalize">{{ $barang->categories->nama_kategori}}</td>
+                        <td class="text-capitalize">{{ $barang->jumlah_barang }}</td>
+                        {{-- @if(auth()->user()->can('barang edit') || auth()->user()->can('barang hapus')) --}}
                         <td>
                             <div>
-                                <a href="/edit_kode_barang/{{ $kode->id }}" class="btn btn-primary">Edit</a>
-                                <a href="/delete_kode_barang/{{ $kode->id }}" class="btn btn-danger">Hapus</a>
+                               
+                                <a href="/edit_kode_barang/{{ $barang->id }}" class="btn btn-primary">Edit</a>                                  
+                                <a href="/delete_kode_barang/{{ $barang->id }}" class="btn btn-danger">Hapus</a>
+                               
+                        
+                            
+                                    
+                               
                             </div>
                         </td>
+                        {{-- @endif --}}
                     </tr>
                     @endforeach
 
