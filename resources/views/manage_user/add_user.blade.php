@@ -35,13 +35,13 @@
                 </div>
                 <div class="form-group">
                     <label for="role">Role</label>
-                    <select name="role_id" class="form-control @error('role_id') is-invalid @enderror">
+                    <select name="roles[]" class="form-control @error('roles') is-invalid @enderror" multiple>
                         <option value="">Pilih Role</option>
-                        @foreach ($user as $item)
+                        @foreach ($roles as $item)
                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                         @endforeach
                     </select>
-                    @error('role_id')
+                    @error('roles')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>

@@ -16,6 +16,7 @@ use App\Http\Controllers\LogBarangController;
 use App\Http\Controllers\ManageRole;
 use App\Http\Controllers\ManageRoleController;
 use App\Models\BarangKeluar;
+use App\Models\LogBarang;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,12 +37,14 @@ Route::get('/home', [HomeController::class, 'index'])->middleware('auth');
 
 
 //ROLE
-Route::get('role', [ManageRoleController::class, 'index']);
-Route::get('role/add', [ManageRoleController::class, 'tambah']);
-Route::post('role/add', [ManageRoleController::class, 'store'])->name('add.role');
-Route::get('role/edit/{id}', [ManageRoleController::class, 'edit']);
-Route::put('role/edit/{id}', [ManageRoleController::class, 'update'])->name('update.role');
-Route::get('role/delete/{id}', [ManageRoleController::class, 'delete'])->name('delete.role');
+Route::middleware('auth')->group(function() {
+    Route::get('role', [ManageRoleController::class, 'index']);
+    Route::get('role/add', [ManageRoleController::class, 'tambah']);
+    Route::post('role/add', [ManageRoleController::class, 'store'])->name('add.role');
+    Route::get('role/edit/{id}', [ManageRoleController::class, 'edit']);
+    Route::put('role/edit/{id}', [ManageRoleController::class, 'update'])->name('update.role');
+    Route::get('role/delete/{id}', [ManageRoleController::class, 'delete'])->name('delete.role');
+});
 
 // Kategori
 Route::middleware(['auth'])->group(function() {
@@ -61,7 +64,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/edit_kode_barang/{id}', [CodesController::class, 'edit']);
     Route::put('/edit_kode_barang/{id}', [CodesController::class, 'update'])->name('update.codes');
     Route::get('/delete_kode_barang/{id}', [CodesController::class, 'hapus']);
-    Route::get('/log_barang', [CodesController::class, 'logBarang']);
+    Route::get('/s', [CodesController::class, 'search'])->name('s');
     
 });
 
@@ -77,6 +80,8 @@ Route::middleware('auth')->group(function(){
     Route::get('/edit_barang_masuk/{id}',[BarangMasukController::class, 'edit']);
     Route::put('/edit_barang_masuk/{id}',[BarangMasukController::class, 'update'])->name('update.barang');
     Route::get('/delete_barang_masuk/{id}', [BarangMasukController::class, 'hapus']);
+    Route::get('/q', [BarangMasukController::class, 'search'])->name('q');
+
 
 
 
@@ -90,6 +95,8 @@ Route::middleware('auth')->group(function(){
     Route::get('/edit_barang_keluar/{id}',[BarangKeluarController::class, 'edit']);
     Route::put('/edit_barang_keluar/{id}',[BarangKeluarController::class, 'update'])->name('update.barang.keluar');
     Route::get('/delete_barang_keluar/{id}', [BarangKeluarController::class, 'hapus']);
+    Route::get('/c', [BarangKeluarController::class, 'search'])->name('c');
+
 
 });
 
@@ -97,7 +104,7 @@ Route::middleware('auth')->group(function(){
 
 
 // Manage User
-Route::middleware(['auth','adminAkses'])->group(function() {
+Route::middleware(['auth'])->group(function() {
     Route::get('/manage_user', [ManageUserController::class, 'index'])->name('user.manage');
     Route::get('/user_add', [ManageUserController::class, 'tambah']);
     Route::post('/user_add', [ManageUserController::class, 'store'])->name('user.add');
@@ -105,5 +112,8 @@ Route::middleware(['auth','adminAkses'])->group(function() {
     Route::put('/edit_user/{id}', [ManageUserController::class, 'update'])->name('user.update');
     Route::get('/delete_user/{id}', [ManageUserController::class, 'hapus']);
     Route::get('/filter_user', [ManageUserController::class, 'filter'])->name('filter.user'); 
+    Route::get('/search', [ManageUserController::class, 'search'])->name('search');
 });
 
+Route::get('/export-pdf', [LogBarangController::class, 'exportPdf']);
+Route::get('/log_barang', [LogBarangController::class, 'logBarang']);

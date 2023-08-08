@@ -24,6 +24,7 @@
 </div>
 
 <!-- Nav Item - Pages Collapse Menu Users -->
+
 <li class="nav-item">
     <a class="nav-link collapsed" href="/" data-toggle="collapse" data-target="#collapsePageUser"
         aria-expanded="true" aria-controls="collapsePageUser">
@@ -42,6 +43,7 @@
     </div>
 </li>
 
+@canany(['barang-create', 'barang-edit', 'barang-hapus'])
 <!-- Nav Item - Pages Collapse Menu Users -->
 <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePageItems"
@@ -66,12 +68,16 @@
         </div>
     </div>
 </li>
+    
+@endcanany
+
+
 
 
 
 <!-- Nav Item - Barang -->
 <li class="nav-item {{ ($title == "Data Barang") ? 'active' : '' }}">
-    <a class="nav-link" href="log_barang">
+    <a class="nav-link" href="{{url('log_barang')}}">
         <i class="fas fa-boxes"></i>
         <span>Log Barang</span></a>
 </li>
@@ -93,13 +99,13 @@
     Pengaturan
 </div>
 
-@if (Auth::user()->role_id == 1)
+{{-- @if (Auth::user()->role_id == 1) --}}
 <li class="nav-item {{ ($title == "Tambah User") ? 'active' : '' }}"">
     <a class="nav-link" href="manage_user">
         <i class="fas fa-users-cog"></i>
         <span>Manajemen Pengguna</span></a>
 </li>
-@endif
+{{-- @endif --}}
 <!-- Nav Item - Manajemen Users -->
 
 <!-- Nav Item - Log Out Menu -->

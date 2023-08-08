@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('barang_masuks', function (Blueprint $table) {
             $table->id();
             $table->integer('codes_id');
-            $table->integer('barang_id')->nullable();
+            // $table->integer('barang_id')->nullable();
             $table->bigInteger('qty');
             $table->date('tgl_masuk');
             $table->bigInteger('total_masuk');

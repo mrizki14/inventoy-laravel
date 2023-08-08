@@ -10,12 +10,38 @@ class BarangKeluarController extends Controller
 {
     public function index () {
         $barang = BarangKeluar::all();
-        $data = Codes::select('kode_barang','nama_barang','id_categories')->get();
+
         return view('barang_keluar',compact('barang'), [
             "title" => "Barang Keluar",
-            "data" => $data
         ]);
     }
+
+    public function search(Request $request) {
+        $search = $request->search;
+        $barang = BarangKeluar::where(function($query) use ($search){
+            $query->where('qty','like',"%$search%")
+            ->orWhere('tgl_keluar','like',"%$search%");
+
+            // ->orWhere('nama_kategori','like',"%$search%");
+        })
+        ->orWhereHas('codes', function($query) use ($search) {
+            $query->where('kode_barang','like',"%$search%")
+            ->orWhere('nama_barang','like',"%$search%")
+            ->orWhere('jumlah_barang','like',"%$search%");
+        })
+        ->orWhereHas('codes.categories', function($query) use ($search) {
+            $query->where('nama_kategori','like',"%$search%");
+        })
+        ->get();
+        // $categori = Category::where(function($query) use ($search) {
+        //     $query->where('nama_kategori','like',"%$search%");
+        // })->get();
+
+        return view ('barang_keluar', compact(['barang','search']),[
+            "title" => "Barang Keluar",
+        ]
+        );
+        }
 
     public function tambah () {
         $codes = Codes::all();
@@ -78,9 +104,9 @@ class BarangKeluarController extends Controller
             
         ]);
 
-        $brg = Codes::findOrFail($request->codes_id);
-        $brg->jumlah_barang -= $request->qty;
-        $brg->save();
+        // $brg = Codes::findOrFail($request->codes_id);
+        // $brg->jumlah_barang -= $request->qty;
+        // $brg->save();
 
         return redirect()->route('barang.keluar')->with('success', 'barang berhasil di update');
 

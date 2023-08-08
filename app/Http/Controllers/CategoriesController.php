@@ -7,12 +7,17 @@ use Illuminate\Http\Request;
 
 class CategoriesController extends Controller
 {
-    public function kategori()
+    public function kategori(Request $request)
     {
-        $data = Category::all();
-        return view('categories', compact('data'),
+        if ($request->search) {
+            $categories = Category::search($request->search)->get();
+        }
+        else {
+            $categories = Category::all();
+        }
+        return view('categories', compact('categories'),
         [
-            "title" => "Kategori"
+            "title" => "Kategori" 
         ]);
     }
 

@@ -2,21 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class BarangMasuk extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
 
     protected $fillable = ['codes_id', 'qty', 'tgl_masuk'];
+    
 
     public function codes()
     {
         return $this->belongsTo(Codes::class, 'codes_id','id');
     }
-    public function logBarang()
-    {
-        return $this->belongsTo(LogBarang::class, 'barang_masuks_id');
-    }   
+    
+    protected $dispatchesEvents = [
+        'created' => \App\Events\BarangTransaksiCreated::class,
+    ];
+
 }
+

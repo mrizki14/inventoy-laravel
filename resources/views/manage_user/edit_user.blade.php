@@ -38,14 +38,14 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <form action="{{ route('user.update', $role->id) }}" method="POST">
+            <form action="{{ route('user.update', $user->id) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="form-group">
                     <label for="name">Nama</label>
                     <input name="name" type="text"
                         class="form-control @error('name') is-invalid @enderror"
-                        value="{{ old('name') ? old('name') : $role->name }}">
+                        value="{{ old('name') ? old('name') : $user->name }}">
                     @error('name')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -54,17 +54,19 @@
                     <label for="email">Email</label>
                     <input name="email" type="text"
                         class="form-control @error('email') is-invalid @enderror"
-                        value="{{ old('email') ? old('email') : $role->email }}">
+                        value="{{ old('email') ? old('email') : $user->email }}">
                     @error('email')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="form-group">
                     <label for="role">Role</label>
-                    <select name="role_id" class="form-control">
+                    <select name="roles[]" class="form-control" multiple>
                         <option value="" selected disabled hidden>Pilih Role</option>
-                        @foreach ($user as $item)
-                        <option value="{{ $item->id }}" {{isset($role) ? ($role->role_id == $item->id ? 'selected' : '') : ''}}>{{ $item->name }}</option>
+                        @foreach ($roles as $item)
+                        <option value="{{ $item }}" {{ in_array($item, $userRole) 
+                            ? 'selected'
+                            : '' }} >{{ $item }}</option>
                         @endforeach
                     </select>
                 </div>
